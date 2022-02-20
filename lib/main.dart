@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +13,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Sudoku Solver',
-      theme: ThemeData.dark(),
+      theme:
+          ThemeData.dark().copyWith(textTheme: GoogleFonts.ubuntuTextTheme()),
       home: const MyHomePage(),
       debugShowCheckedModeBanner: false,
     );
@@ -39,8 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
       sudoku.add([]);
       List<Widget> sudokuColumn = <Widget>[];
       for (var l = 0; l < 9; l++) {
-        final TextEditingController controller =
-            TextEditingController.fromValue(const TextEditingValue(text: "0"));
+        final TextEditingController controller = TextEditingController();
         sudoku[i].add(controller);
         sudokuColumn.add(
           Expanded(
@@ -56,6 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
               keyboardType: TextInputType.number,
               maxLengthEnforcement: MaxLengthEnforcement.enforced,
               controller: controller,
+              style: const TextStyle().copyWith(color: Colors.white),
               decoration: const InputDecoration(
                 prefix: null,
                 contentPadding: EdgeInsets.zero,

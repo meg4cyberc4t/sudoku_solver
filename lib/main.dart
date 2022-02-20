@@ -90,11 +90,17 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isSave(row, col, number) {
     for (var i = 0; i < 9; i++) {
       if (sudoku[i][col].text == number.toString()) {
+        if (i == row) {
+          continue;
+        }
         return false;
       }
     }
     for (var i = 0; i < 9; i++) {
       if (sudoku[row][i].text == number.toString()) {
+        if (i == col) {
+          continue;
+        }
         return false;
       }
     }
@@ -102,6 +108,9 @@ class _MyHomePageState extends State<MyHomePage> {
     int startColumn = col - col % 3;
     for (var i = 0; i < 3; i++) {
       for (var j = 0; j < 3; j++) {
+        if (i + startRow == row && j + startColumn == col) {
+          continue;
+        }
         if (sudoku[i + startRow][j + startColumn].text == number.toString()) {
           return false;
         }
@@ -171,14 +180,27 @@ class _MyHomePageState extends State<MyHomePage> {
           const SizedBox(width: 10),
           FloatingActionButton.extended(
             onPressed: () {
-              for (var row in sudoku) {
-                for (var ctrl in row) {
-                  if (ctrl.text == "") {
-                    ctrl.text = "0";
+              try {
+                for (var i = 0; i < sudoku.length; i++) {
+                  for (var l = 0; l < sudoku[i].length; l++) {
+                    if (sudoku[i][l].text == "") {
+                      sudoku[i][l].text = "0";
+                    } else if (!_isSave(i, l, int.parse(sudoku[i][l].text))) {
+                      throw "Impossible";
+                    }
                   }
                 }
+                if (!_solve()) {
+                  throw "Not found solve";
+                }
+              } catch (e) {
+                debugPrint(e.toString());
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text(
+                      'It is impossible to solve this Sudoku! Check the input!'),
+                ));
               }
-              _solve();
             },
             tooltip: 'Solve',
             label: const Text('Solve'),
